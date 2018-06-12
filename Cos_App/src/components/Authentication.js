@@ -1,11 +1,9 @@
 import React, { Component } from 'react';
 import {
-  Platform,
   StyleSheet,
   Text,
   View,
   TextInput,
-  Button,
   TouchableOpacity
 } from 'react-native';
 
@@ -18,7 +16,20 @@ export default class Authentication extends Component<Props> {
     }
   }
 
-  validateToken(t) {
+  static navigationOptions = {
+    title: 'Authentication',
+    headerStyle: {
+      backgroundColor: '#5DADE2'
+    },
+    headerTitleStyle: {
+      color: '#000',
+      fontSize: 15,
+      fontWeight: 'normal'
+    }
+  };
+
+  validateToken() {
+    const { navigate } = this.props.navigation;
     if(this.state.text == "") {
       alert("Input field can't be empty");
     }else {
@@ -26,7 +37,13 @@ export default class Authentication extends Component<Props> {
       return fetch(url)                              // token 1cv5ers34f
       .then((response) => response.json())
       .then((responseJson) => {
-        alert(responseJson.message);
+        if(responseJson.message == "Token Matched") {
+          alert("Authentication Successful");
+          navigate("SearchPage");  
+        }else {
+          alert("Access Denied");
+          this.setState({ text: "" });
+        }
       })
       .catch((error) => {
         console.error(error);
@@ -50,7 +67,7 @@ export default class Authentication extends Component<Props> {
         <View style={styles.btnContainer}>  
           <TouchableOpacity
             style={styles.button}
-            onPress= {() => {this.validateToken(this.state.text)}}
+            onPress= {() => {this.validateToken()}}
           >
             <Text>Submit</Text>
           </TouchableOpacity>      
@@ -67,7 +84,7 @@ const styles = StyleSheet.create({
   },
   button: {
     alignItems: 'center',
-    backgroundColor: '#DDDDDD',
+    backgroundColor: '#5DADE2',
     padding: 8
   },
   txtContainer: {
