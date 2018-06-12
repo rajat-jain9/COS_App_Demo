@@ -12,10 +12,12 @@ import {
 
 import Authentication from '../components/Authentication';
 import SearchBar from '../components/Search';
+import SearchList from '../components/SearchList';
 
 const Navigation = StackNavigator({
-  AuthPage: { screen: Authentication },
   SearchPage: { screen: SearchBar },
+  AuthPage: { screen: Authentication }, 
+  SearchListPage: { screen: SearchList},
 });
 
 export default Navigation;
