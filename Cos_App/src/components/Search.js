@@ -6,20 +6,23 @@ import {
   TextInput,
   Button,
   TouchableOpacity,
-  View
+  View,
+  ActivityIndicator
 } from 'react-native';
 
 export default class SearchBar extends Component {
   constructor() {
     super();
     this.state = {
-      text: "",
+      text: "How",
       url: "http://sdutta-cadence.cs21.force.com/public/CosLiteApp?searchkey=",
-      data: []
+      data: [],
+      showMe: false
     }
   }
   static navigationOptions = {
     title: 'Search',
+    header: null,
     headerStyle: {
       backgroundColor: '#5DADE2'
     },
@@ -31,50 +34,78 @@ export default class SearchBar extends Component {
   };
 
   search() {
+    this.setState({showMe: true});
     const { navigate } = this.props.navigation;
     if(this.state.text == "") {
       alert("Input field can't be empty");
     }else {
       const url = this.state.url + this.state.text;
-     // alert(url);
       return fetch(url)                              // token 1cv5ers34f
       .then((response) => response.json())
       .then((responseJson) => {
           if(responseJson[0].message == "search result notFound") {
-            alert("Sorry, No result Found.")
+            alert("Sorry, No result Found.");
+            //this.setState({text: ""});
           }else {
             this.setState({data: responseJson});
             navigate("SearchListPage", { data: this.state.data});    
+            //this.setState({text: ""});
           }
+          this.setState({text: "", showMe: false});
       })
       .catch((error) => {
         console.error(error);
       });
     }
+    this.setState({showMe: false});
   }
 
 
   render() {
+     const { navigate } = this.props.navigation;
     return (
       <View style={styles.container}>
-        <View style={styles.searchContainer}>
-          <TextInput
-            style={{height: 40, width: 200, borderWidth: 2, borderColor: 'gray',}}
-            placeholder='search here...'
-            onChangeText={(text) => this.setState({text})}
-            value={this.state.text}
-            editable={true}
-            underlineColorAndroid='transparent'
-          />
-        </View>
-        <View style={styles.btnContainer}>  
-          <TouchableOpacity
-            style={styles.button}
-            onPress= {() => {this.search()}}
-          >
-            <Text> Search </Text>
-          </TouchableOpacity>
-        </View>
+        {
+          this.state.showMe ?
+            <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+              <ActivityIndicator size="large" color="#5DADE2"/>
+              <Text>Loading....</Text>
+            </View>
+          :
+          <View style={{flex: 3}}>
+            <View style={styles.homeContainer}>
+              <View style={styles.txtHome}>
+                <Text style={styles.txt}> Search </Text>
+              </View>
+              <View style={styles.txtBtn}>
+                <TouchableOpacity
+                  style={styles.btnHome}
+                  onPress= {() => {navigate("AuthPage")}}
+                >  
+                  <Text> Logout </Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+            <View style={styles.searchContainer}>
+              <TextInput
+                style={{height: 40, width: 200}}
+                placeholder='search here...'
+                onChangeText={(text) => this.setState({text})}
+                value={this.state.text}
+                editable={true}
+                underlineColorAndroid='#000000'  //transpaent(to remove underline)
+              />
+            </View>
+            <View style={styles.btnContainer}>  
+              <TouchableOpacity
+                style={styles.button}
+                onPress= {() => {this.search()}}
+              >
+                <Text> Search </Text>
+              </TouchableOpacity>
+            </View>
+          </View> 
+        }
       </View>
     );
   }
@@ -84,11 +115,11 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
-    alignItems: 'center',
+    //alignItems: 'center',
     backgroundColor: '#F5FCFF',
   },
  searchContainer: {
-    flex: 1,
+    flex: 4,
     justifyContent: 'flex-end',
     alignItems: 'center',
     padding: 16,
@@ -96,9 +127,37 @@ const styles = StyleSheet.create({
   button: {
     alignItems: 'center',
     backgroundColor: '#5DADE2',
-    padding: 10
+    padding: 10,
+    borderRadius: 10,
   },
   btnContainer: {
+    flex:10,
+    margin: 50,
+    paddingLeft: 20,
+    paddingRight: 20,
+  },
+  homeContainer: {
     flex:2,
+    backgroundColor: '#5DADE2',
+    //justifyContent: 'flex-end',
+    //alignItems: 'flex-end'
+  },
+  txtHome: {
+    flex:1,
+    justifyContent: 'flex-end',
+    alignItems: 'center'
+  },
+  txtBtn: {
+    flex:1,
+    justifyContent: 'flex-end',
+    alignItems: 'flex-end',
+  },
+  btnHome: {
+    backgroundColor: '#D6EAF8',
+    height: 20,
+    width: 60
+  },
+  txt: {
+    fontSize: 16,
   }
 });
