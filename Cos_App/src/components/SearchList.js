@@ -6,12 +6,15 @@ import {
   Image
 } from 'react-native';
 import { Container, Header, Content, Button, Text, Card, CardItem, Body } from 'native-base';
+import OpenFile from 'react-native-doc-viewer';
+
 
 export default class SearchList extends Component {
   constructor() {
     super();
     this.state= {
-      type: ""
+      type: "",
+      url: "http://sdutta-cadence.cs21.force.com/public/CosLiteApp?id=",
     }
   }
 
@@ -27,9 +30,37 @@ export default class SearchList extends Component {
     }
   };
 
-   test() {
-    alert("Done...");
+   getFile(id, type) {
+    const url = this.state.url + id;
+    return fetch(url)
+    .then((response) => response.json())
+    .then((responseJson) => {
+      this.openFile(responseJson.Type, responseJson.Body);
+    })
+    .catch((error) => {
+      console.error(error);
+    });
   }
+
+openFile = (type, body) => {
+  if(type == "flv" || type == "mkv") {
+    type = "mp4";
+  }
+    OpenFile.openDocb64([{
+      base64: body,
+      fileName:"sample",
+      fileType:type,
+      cache: true
+    }], (error, url) => {
+      if (error) {
+        console.error(error);
+      } else {
+        console.log(url)
+      }
+    })
+  }
+
+
 
   render() {
     const { navigate } = this.props.navigation;
@@ -56,21 +87,22 @@ export default class SearchList extends Component {
       }
       return(
         <Card>
-          {/*<TouchableOpacity  style={styles.button} onPress={this.onPress}>*/}
             <CardItem style={styles.card}>
               <Body>
                 <View style={{flex:1, flexDirection: 'row'}}>
                   <View style={{flex:5}}>
-                  <View>
-                  <TouchableOpacity  style={styles.button} onPress= { () => { navigate('ContentPage', {id: listItem.Id, type: listItem.Type}) }}>
-                    <Text style={{fontWeight: 'bold', color: '#5DADE2'}} numberOfLines={2}>
-                      {listItem.Title} 
-                    </Text>
-                    </TouchableOpacity>
+                    <View>
+                      <TouchableOpacity  key={index} onPress={ () => {this.getFile(listItem.Id, listItem.Type)}}>
+                        <Text style={{fontWeight: 'bold', color: '#5DADE2'}} numberOfLines={2}>
+                          {listItem.Title} 
+                        </Text>
+                      </TouchableOpacity>
                     </View>
-                    <Text style={{fontSize:10, fontWeight: 'normal'}} numberOfLines={2}>
-                      {listItem.Description}
-                    </Text>
+                    <View>            
+                        <Text style={{fontSize:10, fontWeight: 'normal'}} numberOfLines={2}>
+                          {listItem.Description}
+                        </Text>
+                    </View> 
                   </View>
                   <View style={{flex:1, alignItems: 'center'}}>
                     <Image
@@ -81,19 +113,13 @@ export default class SearchList extends Component {
                 </View>  
               </Body>
             </CardItem>
-          {/*</TouchableOpacity>*/}
         </Card>
       );
-    })
+    }, this)
     return(
       <View style={styles.container}>
-        <TouchableOpacity  style={styles.button} onPress= { () => { navigate("ContentPage")} }>
-          <Text style={{fontWeight: 'bold', color: '#5DADE2'}} numberOfLines={2}>
-            Click Me 
-          </Text>
-        </TouchableOpacity>
         <Content style={{margin: 10}}>
-          {list}
+            {list}
         </Content>
       </View>
     );
