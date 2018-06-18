@@ -61,13 +61,6 @@ export default class Authentication extends Component<Props> {
     console.log("outside token......");
   }
 
-  /*componentWillMount() {
-    setTimeout( ()=> {
-      this.setState({showMe: false})
-    },
-    3000);
-  }*/
-
   render() {
     console.log("inside render");
     return (

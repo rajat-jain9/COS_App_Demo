@@ -45,11 +45,9 @@ export default class SearchBar extends Component {
       .then((responseJson) => {
           if(responseJson[0].message == "search result notFound") {
             alert("Sorry, No result Found.");
-            //this.setState({text: ""});
           }else {
             this.setState({data: responseJson});
             navigate("SearchListPage", { data: this.state.data});    
-            //this.setState({text: ""});
           }
           this.setState({text: "", showMe: false});
       })
