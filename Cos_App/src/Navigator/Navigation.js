@@ -15,9 +15,9 @@ import SearchBar from '../components/Search';
 import SearchList from '../components/SearchList';
 
 const Navigation = StackNavigator({
+  AuthPage: { screen: Authentication },
   SearchPage: { screen: SearchBar }, 
   SearchListPage: { screen: SearchList},
-  AuthPage: { screen: Authentication },
 });
 
 export default Navigation;

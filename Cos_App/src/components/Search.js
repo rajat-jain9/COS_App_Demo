@@ -14,7 +14,7 @@ export default class SearchBar extends Component {
   constructor() {
     super();
     this.state = {
-      text: "how to test",
+      text: "",
       url: "http://sdutta-cadence.cs21.force.com/public/CosLiteApp?searchkey=",
       data: [],
       showMe: false
