@@ -7,6 +7,9 @@ import {
   TouchableOpacity,
   ActivityIndicator
 } from 'react-native';
+import { NetInfo } from 'react-native'
+
+import OfflineNotice from './OfflineNotice';
 
 export default class Authentication extends Component<Props> {
   constructor() {
@@ -14,7 +17,8 @@ export default class Authentication extends Component<Props> {
     this.state = {
       text: "",
       url: "http://sdutta-cadence.cs21.force.com/public/CosLiteApp?token=",
-      showMe: false
+      showMe: false,
+      isConnected: true
     }
   }
 
@@ -27,6 +31,22 @@ export default class Authentication extends Component<Props> {
       color: '#000',
       fontSize: 15,
       fontWeight: 'normal'
+    }
+  };
+
+  componentDidMount() {
+    NetInfo.isConnected.addEventListener('connectionChange', this.handleConnectivityChange);
+  }
+
+  componentWillUnmount() {
+    NetInfo.isConnected.removeEventListener('connectionChange', this.handleConnectivityChange);
+ }
+
+  handleConnectivityChange = isConnected => {
+    if (isConnected) {
+      this.setState({ isConnected });
+    } else {
+      this.setState({ isConnected });
     }
   };
 
@@ -44,25 +64,25 @@ export default class Authentication extends Component<Props> {
         if(responseJson.message == "Token Matched") {
           alert("Authentication Successful");
           navigate("SearchPage");
-         // this.setState({ text: "" });
-          //this.setState({showMe: false});
           console.log("ghj.............");
         }else {
           alert("Access Denied");
-          //this.setState({showMe: false, text: ""});
         }
         this.setState({showMe: false, text: ""});
-        //this.setState({ showMe: false });
       })
       .catch((error) => {
         console.error(error);
       });
     }
-    console.log("outside token......");
   }
 
   render() {
-    console.log("inside render");
+    console.log("status.." +this.state.isConnected);
+    if (!this.state.isConnected){
+      return(
+        <OfflineNotice/>
+      );
+    }else
     return (
       <View style={styles.container}>
         {
@@ -77,6 +97,8 @@ export default class Authentication extends Component<Props> {
               <Text>Enter your Authentication Code:</Text>
               <TextInput
                 style={{height: 40, width: 100, marginTop: 20}}
+                secureTextEntry={true}
+                autoFocus = {true}
                 onChangeText={(text) => this.setState({text})}
                 value={this.state.text}
                 editable={true}
