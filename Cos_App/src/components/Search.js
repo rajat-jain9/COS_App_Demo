@@ -14,30 +14,22 @@ export default class SearchBar extends Component {
   constructor() {
     super();
     this.state = {
-      text: "",
+      text: "how",
       url: "http://sdutta-cadence.cs21.force.com/public/CosLiteApp?searchkey=",
       data: [],
       showMe: false
     }
   }
   static navigationOptions = {
-    title: 'Search',
-    header: null,
-    headerStyle: {
-      backgroundColor: '#5DADE2'
-    },
-    headerTitleStyle: {
-      color: '#000',
-      fontSize: 15,
-      fontWeight: 'normal'
-    }
+    header: null
   };
 
   search() {
     this.setState({showMe: true});
     const { navigate } = this.props.navigation;
-    if(this.state.text == "") {
+    if(this.state.text.trim().length == 0) {      //used to prevent just space in input field.
       alert("Input field can't be empty");
+      this.setState({text: ""});
     }else {
       const url = this.state.url + this.state.text;
       return fetch(url)                              // token 1cv5ers34f
@@ -91,6 +83,7 @@ export default class SearchBar extends Component {
                 onChangeText={(text) => this.setState({text})}
                 value={this.state.text}
                 editable={true}
+                autoFocus={false}
                 underlineColorAndroid='#000000'  //transpaent(to remove underline)
               />
             </View>

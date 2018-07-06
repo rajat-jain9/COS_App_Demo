@@ -48,27 +48,34 @@ export default class SearchList extends Component {
   }
 
 openFile = (type, body) => {
+  const { navigate } = this.props.navigation;
   if(type == "flv" || type == "mkv") {
     type = "mp4";
   }
-    OpenFile.openDocb64([{
-      base64: body,
-      fileName:"sample",
-      fileType:type,
-      cache: true
-    }], (error, url) => {
-      if (error) {
-        console.error(error);
-      } else {
-        console.log(url)
-      }
-    })
+  if(type == "pdf") {
+    navigate("PdfViewer", {body: body, name: "My PDF FIle"});
+  }else if(type == "jpg"){
+    navigate("ImgViewer", {body: body, name: "My PDF FIle"});
+  }else {
+      OpenFile.openDocb64([{
+        base64: body,
+        fileName:"sample",
+        fileType:type,
+        cache: true
+      }], (error, url) => {
+          if (error) {
+            console.error(error);
+          } else {
+          console.log(url)
+        }
+      })
+    }
   }
 
 
 
   render() {
-    const { navigate } = this.props.navigation;
+    //const { navigate } = this.props.navigation;
     var {params} = this.props.navigation.state;
     let list = params.data.map(function(listItem, index) {
       console.log("index: " +index);
