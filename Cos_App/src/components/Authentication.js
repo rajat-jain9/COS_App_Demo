@@ -5,7 +5,8 @@ import {
   View,
   TextInput,
   TouchableOpacity,
-  ActivityIndicator
+  ActivityIndicator,
+  AsyncStorage
 } from 'react-native';
 import { NetInfo } from 'react-native'
 
@@ -18,7 +19,8 @@ export default class Authentication extends Component<Props> {
       text: "",
       url: "http://sdutta-cadence.cs21.force.com/public/CosLiteApp?token=",
       showMe: false,
-      isConnected: true
+      isConnected: true,
+      isLoggedIn: "false"
     }
   }
 
@@ -49,8 +51,14 @@ export default class Authentication extends Component<Props> {
       this.setState({ isConnected });
     }
   };
-
+  isLoggedIn() {
+    this.state.isLoggedIn = "true";
+    let user = this.state.isLoggedIn;
+    AsyncStorage.setItem('name', user);
+    console.log("loign status:" +user)
+  }
   validateToken() {
+    console.log("login status..." +this.state.isLoggedIn);
     this.setState({showMe: true});
     const { navigate } = this.props.navigation;
     if(this.state.text == "") {
@@ -63,8 +71,8 @@ export default class Authentication extends Component<Props> {
       .then((responseJson) => {
         if(responseJson.message == "Token Matched") {
           alert("Authentication Successful");
+          this.isLoggedIn();
           navigate("SearchPage");
-          console.log("ghj.............");
         }else {
           alert("Access Denied");
         }
@@ -77,7 +85,7 @@ export default class Authentication extends Component<Props> {
   }
 
   render() {
-    console.log("status.." +this.state.isConnected);
+    console.log("inside render auh");
     if (!this.state.isConnected){
       return(
         <OfflineNotice/>
@@ -112,7 +120,7 @@ export default class Authentication extends Component<Props> {
                 onPress= {() => {this.validateToken()}}
               >
                 <Text>Submit</Text>
-              </TouchableOpacity>       
+              </TouchableOpacity>    
             </View>
           </View>
         }

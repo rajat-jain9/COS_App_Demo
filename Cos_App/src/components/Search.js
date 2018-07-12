@@ -7,7 +7,8 @@ import {
   Button,
   TouchableOpacity,
   View,
-  ActivityIndicator
+  ActivityIndicator,
+  AsyncStorage
 } from 'react-native';
 
 export default class SearchBar extends Component {
@@ -23,6 +24,17 @@ export default class SearchBar extends Component {
   static navigationOptions = {
     header: null
   };
+
+  /*showData = async () => {
+    try {
+      let user  = await AsyncStorage.getItem('name');
+      alert(user);
+    }
+
+    catch(error) {
+      alert(error);
+    }
+  }*/
 
   search() {
     this.setState({showMe: true});
@@ -50,6 +62,24 @@ export default class SearchBar extends Component {
     this.setState({showMe: false});
   }
 
+  logout() {
+    const { navigate } = this.props.navigation;
+    let user = "false";
+    AsyncStorage.setItem('name', user);
+    navigate('AuthPage');
+  }
+
+  showData = async () => {
+    try {
+      let user  = await AsyncStorage.getItem('name');
+      alert(user);
+    }
+
+    catch(error) {
+      alert(error);
+    }
+  }
+
 
   render() {
      const { navigate } = this.props.navigation;
@@ -70,7 +100,7 @@ export default class SearchBar extends Component {
               <View style={styles.txtBtn}>
                 <TouchableOpacity
                   style={styles.btnHome}
-                  onPress= {() => {navigate("AuthPage")}}
+                  onPress= {() => {this.logout()}}
                 >  
                   <Text> Logout </Text>
                 </TouchableOpacity>

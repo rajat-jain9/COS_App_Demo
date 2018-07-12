@@ -7,7 +7,7 @@ import {
 } from 'react-native';
 
 import {
-  StackNavigator,
+  createStackNavigator,
 } from 'react-navigation';
 
 import Authentication from '../components/Authentication';
@@ -16,12 +16,15 @@ import SearchList from '../components/SearchList';
 import PDFViewer from '../components/PDFViewer';
 import ImageViewer from '../components/ImageViewer';
 
-const Navigation = StackNavigator({
+
+const Navigation = createStackNavigator({
   AuthPage: { screen: Authentication },
   SearchPage: { screen: SearchBar }, 
   SearchListPage: { screen: SearchList},
   PdfViewer: {screen: PDFViewer},
   ImgViewer: {screen: ImageViewer}
+},{
+   initialRouteName: 'AuthPage',
 });
 
 export default Navigation;
